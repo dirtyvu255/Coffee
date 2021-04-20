@@ -1,0 +1,47 @@
+{
+    "Menu": [
+        {
+            "id": "1",
+            "name": "Coffee",
+            "price": "20000",
+            "img": "https://ibb.co/s6mtryj"
+        },
+        {
+            "id": "2",
+            "name": "Soda",
+            "price": "30000",
+            "img": "https://ibb.co/0yQJ2cp"
+        },
+        {
+            "id": "3",
+            "name": "Milk tea",
+            "price": "25000",
+            "img": "https://ibb.co/Zm4zpD4"
+        },
+        {
+            "id": "4",
+            "name": "Lemonade",
+            "price": "15000",
+            "img": "https://ibb.co/289VWG4"
+        },
+        {
+            "id": "5",
+            "name": "Yogurt",
+            "price": "30000",
+            "img": "https://ibb.co/Yffm5GZ"
+        },
+        {
+            "id": "6",
+            "name": "Cocktail",
+            "price": "60000",
+            "img": "https://ibb.co/4sZpz3b"
+        },
+        {
+            "id": "7",
+            "name": "Beer",
+            "price": "30000",
+            "img": "https://ibb.co/HVYxtWz"
+        }
+    ]
+    
+}
