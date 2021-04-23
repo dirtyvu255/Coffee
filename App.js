@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { Animated, View, StyleSheet, PanResponder, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import {View, StyleSheet, Text, FlatList, TouchableOpacity, Image, LogBox } from "react-native";
 
 import Modal from 'react-native-modal';
 import Table from './images/chair.png';
 import Menu from './Menu.json'
 import Drag from './Draggable'
 
+LogBox.ignoreLogs(['Warning: ...']);
+LogBox.ignoreAllLogs();
 class App extends Component {
   constructor(props) {
     super(props);
@@ -61,72 +63,22 @@ class App extends Component {
           activated: false
         },
         {
-          id: 7,
+          id: 8,
           order: [0,0,0,0,0,0,0],
           total: 0,
           activated: false
         },
       ],
       showMenu: false,
+      showBill: false,
       idMenu: 0,
+      idCheckout: -1,
+      total: 0
     };
     this.showMenu = this.showMenu.bind(this)
+    this.showBill = this.showBill.bind(this)
   }
   
-  pan = new Animated.ValueXY();
-  
-  panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => {
-      this.pan.setOffset({
-        x: this.pan.x._value,
-        y: this.pan.y._value
-      });
-    },
-    onPanResponderMove: Animated.event([
-      null,
-      { dx: this.pan.x, dy: this.pan.y }
-    ]),
-    onPanResponderRelease: (e, gesture) => {
-        if (this.isDropArea(gesture)) {
-          console.log("hihi")
-        }
-        else {
-          Animated.spring(this.pan, {
-            toValue: { x: 0, y: 0 },
-            friction: 5
-          }).start();
-        }
-        
-    }
-  })
-  isDropArea(gesture) {
-    if(100 <= gesture.moveY && gesture.moveY <= 250){
-      if(0 < gesture.moveX && gesture.moveX <  133){
-        this.showMenu(1)
-      } else if(133 < gesture.moveX && gesture.moveX <  266){
-        this.showMenu(2)
-      } else{
-        this.showMenu(3)
-      }
-    } else if (250 <= gesture.moveY && gesture.moveY <= 400){
-      if(0 < gesture.moveX && gesture.moveX <  133){
-        this.showMenu(4)
-      } else if(133 < gesture.moveX && gesture.moveX <  266){
-        this.showMenu(5)
-      } else{
-        this.showMenu(6)
-      }
-    } else if (250 <= gesture.moveY && gesture.moveY <= 550){
-      if(0 < gesture.moveX && gesture.moveX <  133){
-        this.showMenu(7)
-      } else if(133 < gesture.moveX && gesture.moveX <  266){
-        this.showMenu(8)
-      } else{
-        this.showMenu(9)
-      }
-    }
-  }
 
 
   showMenu = (id) => {
@@ -142,6 +94,9 @@ class App extends Component {
   hideMenu = () => {
     this.setState({showMenu: false})
   }
+  hideBill = () => {
+    this.setState({showBill: false})
+  }
   addOrder = (id, index) => {
     let temp = this.state.DATA
     temp[id].order[index] += 1
@@ -154,8 +109,45 @@ class App extends Component {
     temp[id].total -= 1
     this.setState({DATA: temp})
   }
+  showBill(id) {
+    if(id > 0){
+      this.setState({showBill: true, idCheckout: id})
+    }
+  }
+  renderBill(order){ 
+    let count = 0
+    return order.map( (item, index) => {
+      if(item > 0){
+        count++
+        return <View style={{flexDirection: 'row', padding: 20}}>
+          <View style={{width: 105}}>
+            <Text>{count}. {Menu.Menu[index].name}</Text>
+          </View>
+          <View style={{width: 140}}>
+            <Text style={{textAlign: 'center'}}>{item}</Text>
+          </View>
+          <View style={{width: 90}}>
+            <Text style={{textAlign:'right'}}>{parseInt(Menu.Menu[index].price)*item}</Text>
+          </View>
+        </View>
+      }
+    })
+  }
+  getTotal(order){
+    let total = 0;
+    order.map( (item,index) =>{
+      total += parseInt(Menu.Menu[index].price)*item
+    })
+    return <Text style={{textAlign: 'center', paddingBottom: 10}}>Total: {total}</Text>
+  }
+
+  resetOrder = (id) => {
+    let temp = this.state.DATA
+    temp[id].order = [0,0,0,0,0,0,0]
+    temp[id].activated = false
+    temp[id].total = 0
+  }
   render() {
-    console.log(this.state.DATA)
     return (
       <View style={styles.container}>
         <View style={{marginTop: 20, height: 80}}>
@@ -171,27 +163,41 @@ class App extends Component {
             >
               <Text>{item.total}</Text>
               <Image source={Table} style={{height: 60, width: 60}}></Image>
-              <Text>Ban {item.id+1}</Text>
+              <Text>Bàn {item.id+1}</Text>
             </View>
           )}
           keyExtractor={item => item.id}
         >
         </FlatList>
-        <View style={{height: 60, width: 60, marginBottom: 200}}>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
-        <Drag showMenu={this.showMenu}/>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 150}}>
+        <View style={{height: 60, width: 60}}>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+          <Drag showMenu={this.showMenu} showBill={this.showBill}/>
+        </View>
+        <View style={{height: 100, width: 100, backgroundColor: 'pink'}}>
+          <Text style={{textAlign: 'center'}}>Checkout</Text>
+        </View>
         </View>
         { this.state.DATA[this.state.idMenu].activated ? (
           <Modal isVisible={this.state.showMenu} onBackdropPress={this.hideMenu}>
-          <View style={{backgroundColor: '#fff', width: '100%'}}>
-            <Text>Ban so {this.state.idMenu +1}</Text>
+          <View style={{backgroundColor: '#fff', width: '100%', borderRadius: 10}}>
+            <Text style={{textAlign: 'center', fontSize: 18, fontWeight: '600', marginTop: 10, color: 'pink'}}>Bàn số {this.state.idMenu +1}</Text>
           <FlatList
             scrollEnabled={false}
             data={Menu.Menu}
@@ -199,7 +205,7 @@ class App extends Component {
             renderItem={ ({ item, index }) => (
               <TouchableOpacity style={{flex: 1, height: 150, justifyContent: 'center', alignItems: 'center'}} onPress={() => this.addOrder(this.state.idMenu, index)} onLongPress={() => this.removeOrder(this.state.idMenu, index)}>
                 <Text>{this.state.DATA[this.state.idMenu].order[index]}</Text>
-                <Text>{item.name}</Text>
+                <Text style={{fontWeight: '500'}}>{item.name}</Text>
                 {/* <Image source={require('./images/Beer.jpg')} style={{height: 80, width: 80}}></Image> */}
                 <Image source={{uri: item.img}} style={{height: 80, width: 80}}></Image>
                 <Text>{item.price}</Text>
@@ -208,10 +214,27 @@ class App extends Component {
             keyExtractor={item => item.id}
           >
           </FlatList>
-          </View>r
+          </View>
+        </Modal>
+        ) : null}
+
+        { this.state.showBill? (
+          <Modal isVisible={this.state.showBill} onBackdropPress={this.hideBill}>
+          <View style={{backgroundColor: '#fff', width: '100%', borderRadius: 10}}>
+            <Text style={{textAlign: 'center', fontSize: 18, fontWeight: '600', marginTop: 10, color: 'pink'}}>Bàn số {this.state.idCheckout +1}</Text>
+            <View style={{justifyContent: 'space-between', flexDirection: 'row', padding: 20}}>
+              <Text>Name</Text>
+              <Text>Quantity</Text>
+              <Text>Price</Text>
+            </View>
+            {this.renderBill(this.state.DATA[this.state.idCheckout].order)}
+            {this.getTotal(this.state.DATA[this.state.idCheckout].order)}
+            {this.resetOrder(this.state.idCheckout)}
+          </View>
         </Modal>
         ) : null}
       </View>
+      
     );
   }
 }
@@ -219,6 +242,7 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: "#fff"
   },
   titleText: {
     fontSize: 14,

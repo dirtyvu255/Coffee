@@ -4,43 +4,43 @@
             "id": "1",
             "name": "Coffee",
             "price": "20000",
-            "img": "https://ibb.co/s6mtryj"
+            "img": "https://i.ibb.co/rc7vJ4k/Coffee.jpg"
         },
         {
             "id": "2",
             "name": "Soda",
             "price": "30000",
-            "img": "https://ibb.co/0yQJ2cp"
+            "img": "https://i.ibb.co/pjnXwx6/Soda.jpg"
         },
         {
             "id": "3",
             "name": "Milk tea",
             "price": "25000",
-            "img": "https://ibb.co/Zm4zpD4"
+            "img": "https://i.ibb.co/2NV314V/Milktea.webp"
         },
         {
             "id": "4",
             "name": "Lemonade",
             "price": "15000",
-            "img": "https://ibb.co/289VWG4"
+            "img": "https://i.ibb.co/yh9vdHj/Lemonade.jpg"
         },
         {
             "id": "5",
             "name": "Yogurt",
             "price": "30000",
-            "img": "https://ibb.co/Yffm5GZ"
+            "img": "https://i.ibb.co/gttN0CV/Yogurt.jpg"
         },
         {
             "id": "6",
             "name": "Cocktail",
             "price": "60000",
-            "img": "https://ibb.co/4sZpz3b"
+            "img": "https://i.ibb.co/PTZgK02/Cocktail.jpg"
         },
         {
             "id": "7",
             "name": "Beer",
             "price": "30000",
-            "img": "https://ibb.co/HVYxtWz"
+            "img": "https://i.ibb.co/1LKdrDq/Beer.jpg"
         }
     ]
     
